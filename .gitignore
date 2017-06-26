@@ -33,3 +33,5 @@ MsgPack.unitypackage
 project.lock.json
 artifacts/
 .vs/
+.idea/
+/build/

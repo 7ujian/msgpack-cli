@@ -369,6 +369,91 @@ namespace MsgPack.Serialization.ReflectionSerializers
 				return ReflectionExtensions.CreateInstancePreservingExceptionType<T>( typeof( T ), result as object[] );
 			}
 		}
+		
+		
+		[System.Diagnostics.CodeAnalysis.SuppressMessage( "Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "0", Justification = "Validated by caller in base class" )]
+		protected internal override void UnpackToCore( Unpacker unpacker, T collection )
+		{
+			object result = collection as object;
+//				this._constructorParameters == null
+//					? ReflectionExtensions.CreateInstancePreservingExceptionType( typeof( T ) )
+//					: this._constructorParameters.Select( p =>
+//						p.GetHasDefaultValue()
+//							? p.DefaultValue
+//							: p.ParameterType.GetIsValueType()
+//								? ReflectionExtensions.CreateInstancePreservingExceptionType( p.ParameterType )
+//								: null
+//					).ToArray();
+
+			var unpacked = 0;
+
+			var asUnpackable = result as IUnpackable;
+			if ( asUnpackable != null )
+			{
+				asUnpackable.UnpackFromMessage( unpacker );
+				return;// ( T )result;
+			}
+
+			if ( unpacker.IsArrayHeader )
+			{
+				var itemsCount = UnpackHelpers.GetItemsCount( unpacker );
+
+				for ( int i = 0; i < itemsCount; i++ )
+				{
+					result = this.UnpackMemberValue( result, unpacker, itemsCount, unpacked, i, i );
+					unpacked++;
+				}
+			}
+			else
+			{
+#if DEBUG
+				Contract.Assert( unpacker.IsMapHeader, "unpacker.IsMapHeader" );
+#endif // DEBUG
+				var itemsCount = UnpackHelpers.GetItemsCount( unpacker );
+
+				for ( int i = 0; i < itemsCount; i++ )
+				{
+					string name;
+					if ( !unpacker.ReadString( out name ) )
+					{
+						SerializationExceptions.ThrowUnexpectedEndOfStream( unpacker );
+					}
+
+					if ( name == null )
+					{
+						// missing member, drain the value and discard it.
+						if ( !unpacker.Read() && i < itemsCount - 1 )
+						{
+							SerializationExceptions.ThrowMissingKey( i + 1, unpacker );
+						}
+						continue;
+					}
+
+					int index;
+					if ( !this._memberIndexes.TryGetValue( name, out index ) )
+					{
+						// key does not exist in the object, skip the associated value
+						if ( unpacker.Skip() == null )
+						{
+							SerializationExceptions.ThrowMissingItem( i, unpacker );
+						}
+						continue;
+					}
+
+					result = this.UnpackMemberValue( result, unpacker, itemsCount, unpacked, index, i );
+					unpacked++;
+				}
+			}
+
+//			if ( this._constructorParameters == null )
+//			{
+//				return ( T )result;
+//			}
+//			else
+//			{
+//				return ReflectionExtensions.CreateInstancePreservingExceptionType<T>( typeof( T ), result as object[] );
+//			}
+		}
 
 		private object UnpackMemberValue( object objectGraph, Unpacker unpacker, int itemsCount, int unpacked, int index, int unpackerOffset )
 		{
