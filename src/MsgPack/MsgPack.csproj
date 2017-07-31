@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
 <!---    <TargetFrameworks>net46;net35;net45;netstandard1.1;netstandard1.3;MonoAndroid10;Xamarin.iOS10</TargetFrameworks> -->
     <TargetFrameworks>net46;net45;netstandard1.1;netstandard1.3</TargetFrameworks>
+    <!--- <TargetFrameworks>net35</TargetFrameworks> --> 
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

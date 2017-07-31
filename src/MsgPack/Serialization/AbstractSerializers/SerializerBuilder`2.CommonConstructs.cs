@@ -1870,7 +1870,9 @@ namespace MsgPack.Serialization.AbstractSerializers
 			Contract.Assert( !parameterType.IsRef, parameterType + " is not ref" );
 #endif // DEBUG
 			Type parameterTypeDefinition;
-			if ( ( parameterType.TryGetRuntimeType()?.GetIsGenericType() ).GetValueOrDefault() )
+			//if ( ( parameterType.TryGetRuntimeType()?.GetIsGenericType() ).GetValueOrDefault() )
+			if (parameterType.TryGetRuntimeType() != null && parameterType.TryGetRuntimeType().GetIsGenericType())
+
 			{
 				parameterTypeDefinition = parameterType.TryGetRuntimeType().GetGenericTypeDefinition();
 			}

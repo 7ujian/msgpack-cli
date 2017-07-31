@@ -76,6 +76,8 @@ namespace MsgPack.Serialization.AbstractSerializers
 			else
 			{
 				this.BuildObjectUnpackFrom( context, targetInfo, false );
+                if (!this.TargetType.GetIsValueType())
+                    this.BuildObjectUnpackTo(context, targetInfo, false);
 			}
 
 #if FEATURE_TAP
@@ -978,6 +980,138 @@ namespace MsgPack.Serialization.AbstractSerializers
 						unpackHelperArguments
 					)
 				);
+		}
+		
+		
+		private void BuildObjectUnpackTo( TContext context, SerializationTarget targetInfo, bool isAsync )
+		{
+			if ( targetInfo.Members.Count == 0 )
+			{
+				throw new SerializationException(
+					String.Format(
+						CultureInfo.CurrentCulture,
+						isAsync
+						? "At least one serializable member is required because type '{0}' does not implement IAsyncUnpackable interface."
+						: "At least one serializable member is required because type '{0}' does not implement IUnpackable interface.",
+						this.TargetType
+					)
+				);
+			}
+
+			/*
+			 *	#if T is IUnpackable
+			 *  result.UnpackFromMessage( unpacker );
+			 *	#else
+			 *	if( unpacker.IsArrayHeader )
+			 *	{
+			 *		...
+			 *	}
+			 *	else
+			 *	{
+			 *		...
+			 *	}
+			 *	#endif
+			 */
+			var methodName = 
+#if FEATURE_TAP
+				isAsync ? MethodName.UnpackFromAsyncCore : 
+#endif // FEATURE_TAP
+				MethodName.UnpackToCore;
+
+			context.BeginMethodOverride( methodName );
+			context.EndMethodOverride(
+				methodName,
+				targetInfo.CanDeserialize
+				? this.EmitSequentialStatements(
+					context,
+					this.TargetType,
+					this.EmitObjectUnpackToCore( context, targetInfo, isAsync )
+				) : this.EmitThrowCannotUnpackFrom( context )
+			);
+		}
+
+		private IEnumerable<TConstruct> EmitObjectUnpackToCore( TContext context, SerializationTarget targetInfo, bool isAsync )
+		{
+//			var unpackingContext = this.EmitObjectUnpackingContextInitialization( context, targetInfo );
+//
+//			foreach ( var statement in unpackingContext.Statements )
+//			{
+//				yield return statement;
+//			}
+
+			yield return
+				this.EmitConditionalExpression(
+					context,
+					this.EmitGetPropertyExpression( context, context.Unpacker, Metadata._Unpacker.IsArrayHeader ),
+					this.EmitObjectUnpackToCore( context, targetInfo, SerializationMethod.Array, isAsync ),
+					this.EmitObjectUnpackToCore( context, targetInfo, SerializationMethod.Map, isAsync )
+				);
+
+		}
+
+		private TConstruct EmitObjectUnpackToCore( TContext context, SerializationTarget targetInfo, SerializationMethod method, bool isAsync )
+		{
+			var unpackOperationParameters =
+				new[] { context.Unpacker, context.UnpackingContextInUnpackValueMethods, context.IndexOfItem, context.ItemsCount }
+#if FEATURE_TAP
+				.Concat( isAsync ? new [] { this.ReferCancellationToken( context, 2 ) } : NoConstructs ).ToArray()
+#endif // FEATURE_TAP
+				;
+
+			var unpackHelperArguments =
+				new TConstruct[ ( ( method == SerializationMethod.Array ) ? 5 : 4 ) + ( isAsync ? 1 : 0 ) ];
+
+
+
+            var factory =
+                   this.EmitInvokeMethodExpression(
+                       context,
+                       null,
+                   context.UnpackToTarget.ContextType.TryGetRuntimeType() == typeof(object)
+                       ? Metadata._UnpackHelpers.Unbox_1Method.MakeGenericMethod(this.TargetType)
+                    : Metadata._UnpackHelpers.GetIdentity_1Method.MakeGenericMethod(this.TargetType));
+        
+            
+			unpackHelperArguments[ 0 ] = context.Unpacker;
+            unpackHelperArguments[ 1 ] = context.UnpackToTarget;
+            unpackHelperArguments[ 2 ] = factory;
+//			unpackHelperArguments[ 1 ] = unpackingContext.Variable;
+//			unpackHelperArguments[ 2 ] = unpackingContext.Factory;
+
+			if ( method == SerializationMethod.Array )
+			{
+				unpackHelperArguments[ 3 ] = this.EmitGetMemberNamesExpression( context );
+				unpackHelperArguments[ 4 ] = this.EmitGetActionsExpression( context, ActionType.UnpackFromArray, isAsync );
+			}
+			else
+			{
+				unpackHelperArguments[ 3 ] = this.EmitGetActionsExpression( context, ActionType.UnpackFromMap, isAsync );
+			}
+
+#if FEATURE_TAP
+			if ( isAsync )
+			{
+				unpackHelperArguments[ unpackHelperArguments.Length - 1 ] = this.ReferCancellationToken( context, 2 );
+			}
+#endif // FEATURE_TAP
+
+            return
+                    //this.EmitRetrunStatement(
+                    //context,
+                    this.EmitInvokeMethodExpression(
+                        context,
+                        null,
+                        new MethodDefinition(
+                            AdjustName(MethodNamePrefix.UnpackFrom + method, isAsync),
+                            null,//new[] { unpackingContext.Type, this.TargetType },
+                            TypeDefinition.UnpackHelpersType,
+                            true, // isStatic
+                            this.TargetType,
+                            null//unpackHelperArguments.Select( a => a.ContextType ).ToArray()
+                        ),
+                        unpackHelperArguments
+                );
+				//);
 		}
 
 #endregion -- UnpackFrom --

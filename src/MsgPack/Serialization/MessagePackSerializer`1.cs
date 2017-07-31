@@ -266,6 +266,16 @@ namespace MsgPack.Serialization
 			return this.UnpackFrom( unpacker );
 		}
 
+		public void UnpackTo( Stream stream, T collection )
+		{
+			var unpacker = Unpacker.Create( stream );
+			if ( !unpacker.Read() )
+			{
+				SerializationExceptions.ThrowUnexpectedEndOfStream( unpacker );
+			}
+			this.UnpackTo( unpacker, collection );
+		}
+
 #if FEATURE_TAP
 
 		/// <summary>

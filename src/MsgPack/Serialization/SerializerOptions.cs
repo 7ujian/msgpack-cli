@@ -38,7 +38,7 @@ namespace MsgPack.Serialization
 	/// </summary>
 	public sealed class SerializerOptions
 	{
-#if AOT || SILVERLIGHT
+#if AOT || SILVERLIGHT || REFLECTION_BASED
 		private int _emitterFlavor = ( int )EmitterFlavor.ReflectionBased;
 #else
 		private int _emitterFlavor = ( int )EmitterFlavor.FieldBased;

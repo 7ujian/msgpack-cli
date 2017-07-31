@@ -8,7 +8,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>mpu</RootNamespace>
     <AssemblyName>mpu</AssemblyName>
-    <TargetFrameworks>net35;net45</TargetFrameworks>
+    <!-- <TargetFrameworks>net35;net45</TargetFrameworks> -->
+    <TargetFrameworks>net45</TargetFrameworks>
     <FileAlignment>512</FileAlignment>
     <RestorePackages>true</RestorePackages>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
