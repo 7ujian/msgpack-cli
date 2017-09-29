@@ -170,6 +170,7 @@ namespace MsgPack.Serialization
 
 			var getters = GetTargetMembers( targetType ).OrderBy( entry => entry.Contract.Id ).ToArray();
 
+#if FORBIT_ZERO_MEMBER			
 			if ( getters.Length == 0
 				&& !typeof( IPackable ).IsAssignableFrom( targetType )
 				&& !typeof( IUnpackable ).IsAssignableFrom( targetType )
@@ -184,7 +185,8 @@ namespace MsgPack.Serialization
 			{
 				throw new SerializationException( String.Format( CultureInfo.CurrentCulture, "Cannot serialize type '{0}' because it does not have any serializable fields nor properties.", targetType ) );
 			}
-
+#endif
+			
 			var memberCandidates = getters.Where( entry => CheckTargetEligibility( context, entry.Member ) ).ToArray();
 
 			if ( memberCandidates.Length == 0 )

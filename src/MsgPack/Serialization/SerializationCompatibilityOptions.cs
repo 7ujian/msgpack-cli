@@ -171,7 +171,7 @@ namespace MsgPack.Serialization
 #if !FEATURE_CONCURRENT
 		private volatile bool _allowAsymmetricSerializer;
 #else
-		private bool _allowAsymmetricSerializer;
+		private bool _allowAsymmetricSerializer = true;
 #endif // !FEATURE_CONCURRENT
 
 		/// <summary>

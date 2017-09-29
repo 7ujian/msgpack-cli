@@ -21,7 +21,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\MsgPack.snk</AssemblyOriginatorKeyFile>
+    <!--<AssemblyOriginatorKeyFile>..\MsgPack.snk</AssemblyOriginatorKeyFile>-->
     <NuspecFile>../../msgpack.nuspec</NuspecFile>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -282,9 +282,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\MsgPack.snk">
-      <Link>MsgPack.snk</Link>
-    </None>
+    <!--<None Include="..\MsgPack.snk">-->
+      <!--<Link>MsgPack.snk</Link>-->
+    <!--</None>-->
     <None Update="Serialization\DefaultSerializers\DefaultSerializers.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DefaultSerializers.cs</LastGenOutput>

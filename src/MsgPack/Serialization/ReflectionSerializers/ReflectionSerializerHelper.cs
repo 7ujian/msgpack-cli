@@ -240,6 +240,7 @@ namespace MsgPack.Serialization.ReflectionSerializers
 		{
 			SerializationTarget.VerifyCanSerializeTargetType( context, targetType );
 
+#if FORBIT_ZERO_MEMBERS			
 			if ( members.Count == 0 )
 			{
 				if ( !typeof( IPackable ).IsAssignableFrom( targetType ) )
@@ -293,7 +294,7 @@ namespace MsgPack.Serialization.ReflectionSerializers
 #endif // FEATURE_TAP
 
 			}
-
+#endif
 			getters = new Func<object, object>[ members.Count ];
 			setters = new Action<object, object>[ members.Count ];
 			memberInfos = new MemberInfo[ members.Count ];
