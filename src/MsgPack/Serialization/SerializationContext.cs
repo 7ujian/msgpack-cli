@@ -67,6 +67,7 @@ namespace MsgPack.Serialization
 			typeof( SerializationContext ).GetRuntimeMethod( "GetSerializer", new[] { typeof( object ) } );
 #endif // AOT
 
+		public bool allowAutoGenerateSerializer = true;
 
 		// Set SerializerRepository null because it requires SerializationContext, so re-init in constructor.
 		private static SerializationContext _default = new SerializationContext( PackerCompatibilityOptions.None );
@@ -610,6 +611,12 @@ namespace MsgPack.Serialization
 			if ( serializer != null )
 			{
 				return serializer;
+			}
+
+			if ( !allowAutoGenerateSerializer )
+			{
+				throw new Exception("Auto-generate serializer is not allowed!");				
+				return null;
 			}
 
 			bool lockTaken = false;

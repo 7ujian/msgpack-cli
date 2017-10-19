@@ -35,3 +35,4 @@ artifacts/
 .vs/
 .idea/
 /build/
+TestMsgPack

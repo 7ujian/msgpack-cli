@@ -95,7 +95,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 
 			context.EndMethodOverride( 
 				methodName, 
-				this.EmitRetrunStatement( 
+				this.EmitReturnStatement( 
 					context, 
 #if FEATURE_TAP
 					isAsync ?

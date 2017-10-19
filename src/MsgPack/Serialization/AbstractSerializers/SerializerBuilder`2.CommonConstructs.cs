@@ -624,7 +624,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 		/// <param name="context">The generation context.</param>
 		/// <param name="expression">The expression to be returned.</param>
 		/// <returns>The return statement.</returns>
-		protected virtual TConstruct EmitRetrunStatement( TContext context, TConstruct expression )
+		protected virtual TConstruct EmitReturnStatement( TContext context, TConstruct expression )
 		{
 			return expression;
 		}
@@ -1403,7 +1403,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 				);
 			return
 				isAsync
-					? this.EmitRetrunStatement( context, this.EmitInvokeMethodExpression( context, getSerializer, method, arguments ) )
+					? this.EmitReturnStatement( context, this.EmitInvokeMethodExpression( context, getSerializer, method, arguments ) )
 					: this.EmitInvokeVoidMethod( context, getSerializer, method, arguments );
 		}
 
@@ -1533,7 +1533,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 						new []
 						{
 							isAsync
-								? this.EmitRetrunStatement( context, this.EmitInvokeMethodExpression( context, null, helperMethod, this.EmitMakeRef( context, unpackHelperParameters ) ) )
+								? this.EmitReturnStatement( context, this.EmitInvokeMethodExpression( context, null, helperMethod, this.EmitMakeRef( context, unpackHelperParameters ) ) )
 								: this.EmitInvokeVoidMethod( context, null, helperMethod, this.EmitMakeRef( context, unpackHelperParameters ) )
 						}
 					)

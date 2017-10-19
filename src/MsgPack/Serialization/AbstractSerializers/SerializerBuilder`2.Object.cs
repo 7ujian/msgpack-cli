@@ -149,7 +149,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 #if FEATURE_TAP
 				Contract.Assert( context.SerializationContext.SerializerOptions.WithAsync );
 				return
-					this.EmitRetrunStatement(
+					this.EmitReturnStatement(
 						context,
 						this.EmitInvokeMethodExpression(
 							context,
@@ -171,6 +171,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 
 		private void BuildObjectPackTo( TContext context, SerializationTarget targetInfo, bool isAsync )
 		{
+#if FORBIT_ZERO_MEMBER			
 			if ( targetInfo.Members.Count == 0 )
 			{
 				throw new SerializationException(
@@ -183,6 +184,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 					)
 				);
 			}
+#endif	
 
 			var methodName = 
 #if FEATURE_TAP
@@ -245,7 +247,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 #endif // FEATURE_TAP
 							TypeDefinition.VoidType,
 							() => isAsync
-								? this.EmitRetrunStatement( context, this.EmitInvokeMethodExpression( context, context.Packer, methodForNull, argumentsForNull ) )
+								? this.EmitReturnStatement( context, this.EmitInvokeMethodExpression( context, context.Packer, methodForNull, argumentsForNull ) )
 								: this.EmitInvokeVoidMethod( context, context.Packer, methodForNull, argumentsForNull ),
 							parameters
 						);
@@ -301,7 +303,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 										context,
 										TypeDefinition.BooleanType,
 										this.EmitHasValueCore( context, nullCheckTarget, nullCheckTargetType )
-									) : this.EmitRetrunStatement(
+									) : this.EmitReturnStatement(
 										context,
 										this.EmitEqualsExpression( context, nullCheckTarget, this.MakeNullLiteral( context, nullCheckTargetType ) )
 									),
@@ -398,7 +400,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 				if ( isAsync )
 				{
 					// Wrap with return to return Task.
-					methodInvocation = this.EmitRetrunStatement( context, methodInvocation );
+					methodInvocation = this.EmitReturnStatement( context, methodInvocation );
 				}
 
 				if ( method == SerializationMethod.Array )
@@ -438,7 +440,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 			yield return nullable;
 			yield return this.EmitStoreVariableStatement( context, nullable, nullCheckTarget );
 			yield return
-				this.EmitRetrunStatement(
+				this.EmitReturnStatement(
 					context,
 					this.EmitEqualsExpression(
 						context,
@@ -748,14 +750,14 @@ namespace MsgPack.Serialization.AbstractSerializers
 			if ( unpackFrom.ReturnType == typeof( void ) )
 			{
 				yield return this.EmitInvokeVoidMethod( context, result, new MethodDefinition( unpackFrom, @interface ), context.Unpacker );
-				yield return this.EmitRetrunStatement( context, this.EmitLoadVariableExpression( context, result ) );
+				yield return this.EmitReturnStatement( context, this.EmitLoadVariableExpression( context, result ) );
 			}
 			else
 			{
 #if FEATURE_TAP
 				Contract.Assert( context.SerializationContext.SerializerOptions.WithAsync );
 				yield return
-					this.EmitRetrunStatement(
+					this.EmitReturnStatement(
 						context,
 						this.EmitInvokeMethodExpression(
 							context,
@@ -774,6 +776,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 
 		private void BuildObjectUnpackFrom( TContext context, SerializationTarget targetInfo, bool isAsync )
 		{
+#if FORBIT_ZERO_MEMBER			
 			if ( targetInfo.Members.Count == 0 )
 			{
 				throw new SerializationException(
@@ -786,7 +789,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 					)
 				);
 			}
-
+#endif
 			/*
 			 *	#if T is IUnpackable
 			 *  result.UnpackFromMessage( unpacker );
@@ -859,7 +862,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 					privateMethodBody =
 #if FEATURE_TAP
 						isAsync
-						? this.EmitRetrunStatement(
+						? this.EmitReturnStatement(
 							context,
 							this.EmitInvokeMethodExpression(
 								context,
@@ -964,7 +967,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 #endif // FEATURE_TAP
 
 			return
-				this.EmitRetrunStatement(
+				this.EmitReturnStatement(
 					context,
 					this.EmitInvokeMethodExpression(
 						context,
@@ -985,6 +988,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 		
 		private void BuildObjectUnpackTo( TContext context, SerializationTarget targetInfo, bool isAsync )
 		{
+#if FORBIT_ZERO_MEMBER			
 			if ( targetInfo.Members.Count == 0 )
 			{
 				throw new SerializationException(
@@ -997,6 +1001,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 					)
 				);
 			}
+#endif	
 
 			/*
 			 *	#if T is IUnpackable
@@ -1316,7 +1321,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 			}
 
 			yield return
-				this.EmitRetrunStatement(
+				this.EmitReturnStatement(
 					context,
 					this.EmitLoadVariableExpression( context, result )
 				);
@@ -1596,7 +1601,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 					)
 				);
 			yield return
-				this.EmitRetrunStatement(
+				this.EmitReturnStatement(
 					context,
 					this.EmitLoadVariableExpression( context, resultVariable )
 				);

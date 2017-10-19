@@ -209,7 +209,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 			if ( isAsync )
 			{
 				// Wrap with return to return Task
-				methodInvocation = this.EmitRetrunStatement( context, methodInvocation );
+				methodInvocation = this.EmitReturnStatement( context, methodInvocation );
 			}
 
 			yield return methodInvocation;
@@ -411,7 +411,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 						this.TargetType,
 						unpackingContext.Type
 					),
-					() => this.EmitRetrunStatement(
+					() => this.EmitReturnStatement(
 						context,
 						currentTuple
 					),
@@ -434,7 +434,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 				;
 
 			yield return
-				this.EmitRetrunStatement(
+				this.EmitReturnStatement(
 					context,
 					this.EmitInvokeMethodExpression(
 						context,

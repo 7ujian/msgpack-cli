@@ -456,8 +456,11 @@ namespace MsgPack.Serialization
 							AllowNonCollectionEnumerableTypes = configuration.CompatibilityOptions.AllowNonCollectionEnumerableTypes,
 							IgnorePackabilityForCollection = configuration.CompatibilityOptions.IgnorePackabilityForCollection,
 							OneBoundDataMemberOrder = configuration.CompatibilityOptions.OneBoundDataMemberOrder,
-							PackerCompatibilityOptions = configuration.CompatibilityOptions.PackerCompatibilityOptions
+							PackerCompatibilityOptions = configuration.CompatibilityOptions.PackerCompatibilityOptions,
+							// TODO: @jian 临时将这里设置
+							AllowAsymmetricSerializer = true
 						}
+						
 					};
 
 				IEnumerable<Type> realTargetTypes;

@@ -420,7 +420,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 
 			// Call UnpackHelpers
 			yield return
-				this.EmitRetrunStatement(
+				this.EmitReturnStatement(
 					context,
 					this.EmitInvokeMethodExpression(
 						context,
@@ -477,7 +477,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 							this.DetermineCollectionConstructorArguments( context, collectionConstructor )
 						)
 					),
-					this.EmitRetrunStatement(
+					this.EmitReturnStatement(
 						context,
 						this.EmitLoadVariableExpression( context, collection )
 					)
@@ -506,7 +506,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 					TypeDefinition.PolymorphismSchemaType,
 					new[] { storage }
 					.Concat( this.EmitConstructPolymorphismSchema( context, storage, schema ) )
-					.Concat( new[] { this.EmitRetrunStatement( context, this.EmitLoadVariableExpression( context, storage ) ) } )
+					.Concat( new[] { this.EmitReturnStatement( context, this.EmitLoadVariableExpression( context, storage ) ) } )
 				)
 			);
 		}

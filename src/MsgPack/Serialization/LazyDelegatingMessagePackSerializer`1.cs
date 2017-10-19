@@ -32,7 +32,7 @@ namespace MsgPack.Serialization
 	/// <remarks>
 	///		This serializer is intended to support self-composit structure like directories or XML nodes.
 	/// </remarks>
-	internal sealed class LazyDelegatingMessagePackSerializer<T> : MessagePackSerializer<T>
+	public sealed class LazyDelegatingMessagePackSerializer<T> : MessagePackSerializer<T>
 	{
 		private readonly object _providerParameter;
 		private MessagePackSerializer<T> _delegated;

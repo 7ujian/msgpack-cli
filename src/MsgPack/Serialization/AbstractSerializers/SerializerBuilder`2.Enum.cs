@@ -66,7 +66,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 			var invocation =
 #if FEATURE_TAP
 				isAsync
-					? this.EmitRetrunStatement(
+					? this.EmitReturnStatement(
 						context,
 						this.EmitInvokeMethodExpression(
 							context,
@@ -93,7 +93,7 @@ namespace MsgPack.Serialization.AbstractSerializers
 
 			context.EndMethodOverride(
 				MethodName.UnpackFromUnderlyingValue,
-				this.EmitRetrunStatement(
+				this.EmitReturnStatement(
 					context,
 					this.EmitEnumFromUnderlyingCastExpression(
 						context,

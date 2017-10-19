@@ -240,7 +240,7 @@ namespace MsgPack.Serialization.ReflectionSerializers
 		{
 			SerializationTarget.VerifyCanSerializeTargetType( context, targetType );
 
-#if FORBIT_ZERO_MEMBERS			
+#if FORBIT_ZERO_MEMBER			
 			if ( members.Count == 0 )
 			{
 				if ( !typeof( IPackable ).IsAssignableFrom( targetType ) )
